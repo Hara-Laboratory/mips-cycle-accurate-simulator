@@ -8,12 +8,13 @@
 
 * Primary Author : Tanvir Ahmed 
 * Email : tanvira@ieee.org
+* Author : SAKAMOTO Noriaki <noriakis@cad.ce.titech.ac.jp>
 ------------------------------------------*/
 /**
  * @file
  * @brief Load program from given ELF executable file.
- * @author Tanvir Ahmed
- * @author SAKAMOTO Noriaki
+ * @author Tanvir Ahmed <tanvira@ieee.org>
+ * @author SAKAMOTO Noriaki <noriakis@cad.ce.titech.ac.jp>
  * @date 2004
  */
 
