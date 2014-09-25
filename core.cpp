@@ -4,7 +4,7 @@
 
 * Created on : 07-05-2014
 
-* Last Modified on : Thu 25 Sep 2014 02:58:43 PM JST
+* Last Modified on : Thu 25 Sep 2014 04:01:06 PM JST
 
 * Primary Author : Tanvir Ahmed 
 * Email : tanvira@ieee.org
@@ -108,7 +108,7 @@ int main(int argc, char** argv){
     printf(" TRACE ON Value: %x\n", trace_on);
     printf(" TRACE OFF Value: %x\n", trace_off);
   }
-
+/*This is an example update*/
 
 /*  for (int i = 0; i < MEMSIZE; ++i){
     memp = &i_mem[i];
