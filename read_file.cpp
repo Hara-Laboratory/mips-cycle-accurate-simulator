@@ -12,9 +12,9 @@
 /**
  * @file
  * @brief Load program from given ELF executable file.
- * @author Tanvir Ahmed
- * @author SAKAMOTO Noriaki
- * @date 2004
+ * @author Tanvir Ahmed <tanvira@ieee.org>
+ * @author SAKAMOTO Noriaki <noriakis@cad.ce.titech.ac.jp>
+ * @date 2014-08-05
  */
 
 #include <stdio.h>
@@ -82,12 +82,23 @@ static size_t read_entry(Elf *elf) {
  * @param pos relative address from HDRADDR
  * @param x   value
  */
-static void write_imem(int pos, int x) {
+static void write_imem(unsigned int pos, unsigned int x) {
+#if !defined(CONFIG_SEPARATE_I_MEM)
   unsigned char *memp = &i_mem[HDRADDR+pos];
   * memp    = ((x)>>24)&0xff;
   *(memp+1) = ((x)>>16)&0xff;
   *(memp+2) = ((x)>> 8)&0xff;
   *(memp+3) = ((x)    )&0xff;
+#else
+  /* I think you can modify like as follows */
+  /* I assume there is "char i_mem0[MEMSIZE], i_mem1[MEMSIZE], i_mem2[MEMSIZE], i_mem3[MEMSIZE];" */
+  /* If you use dmem::int_mem_write and dmem::int_mem_read over whole the project,
+   * this kind of modification is only applied for dmem::* methods. */
+  i_mem0[HDRADDR+pos  ] = ((x)>>24)&0xff;
+  i_mem1[HDRADDR+pos+1] = ((x)>>16)&0xff;
+  i_mem2[HDRADDR+pos+2] = ((x)>> 8)&0xff;
+  i_mem3[HDRADDR+pos+3] = ((x)    )&0xff;
+#endif
 }
 
 /**
@@ -97,7 +108,24 @@ static void write_imem(int pos, int x) {
  * @param x   value
  */
 static void write_imem(size_t pos, char *buf, int len) {
+#if !defined(CONFIG_SEPARATE_I_MEM)
   memcpy(&i_mem[pos], buf, len);
+#else
+  /* I think you can modify like as follows */
+  /* I assume there is "char i_mem0[MEMSIZE], i_mem1[MEMSIZE], i_mem2[MEMSIZE], i_mem3[MEMSIZE];" */
+  /* If you use dmem::int_mem_write (this method's behavior should be equivalent to write_imem(unsigned int, unsigned int)) and dmem::int_mem_read over whole the project,
+   * this kind of modification is only applied for dmem::* methods. */
+  for (size_t i = 0; i < len; ++i) {
+    char i_mem;
+	switch (i % 4) {
+      case 0: i_mem = imem0; break;
+      case 1: i_mem = imem1; break;
+      case 2: i_mem = imem2; break;
+      case 3: i_mem = imem3; break;
+	}
+	imem[(pos+i)>>2] = buf[i];
+  }
+#endif
 }
 
 /* READ_ELF() */
