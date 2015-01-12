@@ -3,3 +3,4 @@ sim
 .*.sw?
 *~
 #*#
+.DS_Store
