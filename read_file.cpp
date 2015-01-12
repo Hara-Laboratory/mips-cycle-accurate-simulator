@@ -90,6 +90,16 @@ static void write_imem(int pos, int x) {
   *(memp+3) = ((x)    )&0xff;
 }
 
+/**
+ * Write given buffer to the memory.
+ *
+ * @param pos relative address from HDRADDR
+ * @param x   value
+ */
+static void write_imem(size_t pos, char *buf, int len) {
+  memcpy(&i_mem[pos], buf, len);
+}
+
 /* READ_ELF() */
 unsigned int read_elf(const char *file) {
   /* FILEOPEN */
@@ -268,13 +278,13 @@ unsigned int read_elf(const char *file) {
   write_imem(4, ALOCLIMIT);					// malloc limit
   write_imem(8, MEMSIZE-0x80);					// initial stack pointer
 
-  memcpy(&i_mem[Shead[textndx].sh_addr], Text_p, a_text);
+  write_imem(Shead[textndx].sh_addr, Text_p, a_text);
   if (found_rodata)
-    memcpy(&i_mem[Shead[rodatandx].sh_addr], rodata_p, a_rodata);
+    write_imem(Shead[rodatandx].sh_addr, rodata_p, a_rodata);
   if (found_data)
-    memcpy(&i_mem[Shead[datandx].sh_addr], Data_p, a_data);
+    write_imem(Shead[datandx].sh_addr, Data_p, a_data);
 /*  if (found_bss)
-    memcpy(&i_mem[Shead[bssndx].sh_addr], bss_p, a_bss);*/
+    write_imem(Shead[bssndx].sh_addr, bss_p, a_bss);*/
 
   free(Shead);
   free(Phead);
